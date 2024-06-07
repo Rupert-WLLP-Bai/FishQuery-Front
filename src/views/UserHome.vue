@@ -15,7 +15,7 @@ export default defineComponent({
         const searchMode = ref('');
         const searchResults = ref([]);
         const searchQuery = ref('');
-        const imageBase64 = ref('');
+        const image_file = ref<File | null>(null);
         const tags = ref('');
         const category = ref('');
         const matchingCount = ref(10);
@@ -33,8 +33,23 @@ export default defineComponent({
 
         const searchByImage = async () => {
             try {
-                const response = await axios.post('/search/by-image', { imageBase64: imageBase64.value, count: matchingCount.value });
-                searchResults.value = response.data;
+                if (!image_file.value) {
+                    ElMessage.error('请上传图片');
+                    return;
+                }
+                const data = {
+                    'user_id': userStore.user.id,
+                    'count': matchingCount.value,
+                }
+                const formData = new FormData();
+                formData.append('image', image_file.value as File);
+                formData.append('data', JSON.stringify(data));
+                const response = await api.post('/pictures/picture_search', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                searchResults.value = response.data.fish_list;
             } catch (error) {
                 ElMessage.error('搜索失败');
             }
@@ -42,29 +57,19 @@ export default defineComponent({
 
         const searchByTag = async () => {
             try {
-                const response = await axios.post('/search/by-tag', { tags: tags.value, count: matchingCount.value });
-                searchResults.value = response.data;
-            } catch (error) {
-                ElMessage.error('搜索失败');
-            }
-        };
-
-        const searchByCategory = async () => {
-            try {
-                const response = await axios.post('/search/by-category', { category: category.value, count: matchingCount.value });
-                searchResults.value = response.data;
+                const response = await api.get('/pictures/keyword_search',
+                    { params: { user_id: userStore.user.id, keyword: tags.value, count: matchingCount.value } });
+                searchResults.value = response.data.fish_list;
             } catch (error) {
                 ElMessage.error('搜索失败');
             }
         };
 
         const handleImageUpload = (event: Event) => {
-            const file = (event.target as HTMLInputElement).files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                imageBase64.value = e.target.result as string;
-            };
-            reader.readAsDataURL(file);
+            const target = event.target as HTMLInputElement;
+            if (target.files) {
+                image_file.value = target.files[0];
+            }
         };
 
         return {
@@ -73,14 +78,13 @@ export default defineComponent({
             searchMode,
             searchResults,
             searchQuery,
-            imageBase64,
+            image_file,
             tags,
             category,
             matchingCount,
             searchByText,
             searchByImage,
             searchByTag,
-            searchByCategory,
             handleImageUpload,
             showFavorites
         };
@@ -125,9 +129,7 @@ export default defineComponent({
                     </div>
 
                     <div v-if="searchMode === 'image'" class="search-by-upload">
-                        <el-upload :auto-upload="false" :on-change="handleImageUpload">
-                            <el-button>上传图片</el-button>
-                        </el-upload>
+                        <input type="file" @change="handleImageUpload" />
                         <el-input-number v-model="matchingCount" :min="1" placeholder="匹配图片数量" />
                         <el-button type="primary" @click="searchByImage">通过图片搜索</el-button>
                     </div>
