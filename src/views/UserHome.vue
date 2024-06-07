@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useUserStore } from '@/stores/user';
-import axios from 'axios';
+import api from '@/config/axios';
 import FavoriteModal from '@/components/FavoriteModal.vue';
 import { ElMessage } from 'element-plus';
 
@@ -23,8 +23,9 @@ export default defineComponent({
 
         const searchByText = async () => {
             try {
-                const response = await axios.post('/search', { query: searchQuery.value });
-                searchResults.value = response.data;
+                const response = await api.get('/pictures/name_search',
+                    { params: { user_id: userStore.user.id, name: searchQuery.value, count: matchingCount.value } });
+                searchResults.value = response.data.fish_list;
             } catch (error) {
                 ElMessage.error('搜索失败');
             }
@@ -143,13 +144,16 @@ export default defineComponent({
                 <el-card>
                     <h2>搜索结果</h2>
                     <div v-if="searchResults.length === 0">暂无搜索结果</div>
-                    <ul v-else>
-                        <li v-for="result in searchResults" :key="result.fishId">
-                            <p>{{ result.name }}</p>
-                            <p>{{ result.tags }}</p>
-                            <p>{{ result.type }}</p>
-                        </li>
-                    </ul>
+                    <el-table :data="searchResults" v-else>
+                        <el-table-column prop="name_cn" label="中文名"></el-table-column>
+                        <el-table-column prop="name_latin" label="拉丁名"></el-table-column>
+                        <el-table-column prop="tags" label="标签"></el-table-column>
+                        <el-table-column prop="image_url" label="图片">
+                            <template #default="{ row }">
+                                <img :src="row.image_url" alt="鱼类图片" style="width: 100px; height: 100px;" />
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </el-card>
             </el-col>
         </el-row>

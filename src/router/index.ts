@@ -29,6 +29,11 @@ const router = createRouter({
       path: '/check',
       name: 'CheckFish',
       component: () => import('../views/CheckFish.vue')
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('../views/AdminHome.vue')
     }
   ]
 })

@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { ElMessage } from 'element-plus';
 import api from '../config/axios';
 import { useUserStore } from '@/stores/user';
 export default {
@@ -43,13 +44,17 @@ export default {
                     console.log(res);
                     // 如果登录成功，跳转到首页
                     if (res.data.success) {
-                        // 弹窗提示
-                        alert('登录成功');
                         // 保存用户信息
                         this.userStore.setUser(res.data.user);
                         console.log(this.userStore.user);
-                        // 跳转到首页
-                        this.$router.push('/home');
+                        // 判断用户类型
+                        if (res.data.user.role === 1) {
+                            this.$router.push('/admin');
+                            ElMessage.success('Welcome, Admin');
+                        } else {
+                            this.$router.push('/home');
+                            ElMessage.success('Welcome, User');
+                        }
                     }
                 })
                 .catch(err => {
