@@ -9,13 +9,36 @@ const router = createRouter({
       name: 'home',
       component: HomeView
     },
+    // 登录视图
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/UserLogin.vue')
+    },
+    {
+      path: '/home',
+      name: 'userHome',
+      component: () => import('../views/UserHome.vue')
+    },
+    {
+      path: '/upload',
+      name: 'UploadFish',
+      component: () => import('../views/UploadFish.vue')
+    },
+    {
+      path: '/check',
+      name: 'CheckFish',
+      component: () => import('../views/CheckFish.vue')
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('../views/AdminHome.vue')
+    },
+    {
+      path: '/favorite',
+      name: 'favorite',
+      component: () => import('../views/UserFavorite.vue')
     }
   ]
 })
