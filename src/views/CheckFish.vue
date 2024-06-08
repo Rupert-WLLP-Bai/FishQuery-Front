@@ -37,11 +37,16 @@ export default defineComponent({
             }
         };
 
+        const goBack = () => {
+            window.history.back();
+        };
+
         onMounted(() => {
             fetchReviewStatuses();
         });
 
         return {
+            goBack,
             reviewStatuses,
             loading
         };
@@ -52,12 +57,8 @@ export default defineComponent({
 <template>
     <el-row>
         <el-col :span="24">
-            <h1> 审核状态 </h1>
-            <el-button @click="$router.push('/home')">返回主页</el-button>
+            <el-page-header content="审核状态" @back="goBack" />
         </el-col>
-    </el-row>
-
-    <el-row>
         <el-col :span="24">
             <el-table :data="reviewStatuses" v-loading="loading" style="width: 100%">
                 <el-table-column prop="id" label="ID" width="50" />

@@ -49,13 +49,20 @@ export default defineComponent({
             }
         };
 
+        const goBack = () => {
+            window.history.back();
+        };
+
         return {
+            goBack,
             tags,
             name_latin,
             uploadStatus,
             uploadFish,
             handleImageUpload
         };
+    },
+    mounted() {
     }
 });
 </script>
@@ -63,15 +70,11 @@ export default defineComponent({
 <template>
     <el-row>
         <el-col :span="24">
-            <h1> 上传鱼类 </h1>
-            <el-button @click="$router.push('/home')">返回主页</el-button>
+            <el-page-header content="上传鱼类" @back="goBack" />
         </el-col>
-    </el-row>
 
-    <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :span="24">
             <el-card>
-                <h2>上传鱼类</h2>
                 <el-input v-model="name_latin" placeholder="鱼的拉丁名称" clearable />
                 <el-input v-model="tags" placeholder="标签 (逗号分隔)" clearable />
                 <input type="file" @change="handleImageUpload" />
