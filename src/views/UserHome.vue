@@ -2,14 +2,11 @@
 import { defineComponent, ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 import api from '@/config/axios';
-import FavoriteModal from '@/components/FavoriteModal.vue';
 import { ElMessage } from 'element-plus';
 
 export default defineComponent({
     name: 'UserHome',
-    components: {
-        FavoriteModal
-    },
+
     setup() {
         const userStore = useUserStore();
         const searchMode = ref('');
@@ -72,6 +69,22 @@ export default defineComponent({
             }
         };
 
+        const addToFavorites = async (fish: any) => {
+            try {
+                const response = await api.post('/favorites/', {
+                    user_id: userStore.user.id,
+                    fish_id: fish.id
+                });
+                if (response.data.success) {
+                    ElMessage.success('已加入收藏夹');
+                } else {
+                    ElMessage.error('加入收藏夹失败');
+                }
+            } catch (error) {
+                ElMessage.error('加入收藏夹失败');
+            }
+        };
+
         return {
             user: userStore.user,
             favorites: userStore.favorites,
@@ -86,7 +99,8 @@ export default defineComponent({
             searchByImage,
             searchByTag,
             handleImageUpload,
-            showFavorites
+            showFavorites,
+            addToFavorites
         };
     },
     mounted() {
@@ -107,7 +121,7 @@ export default defineComponent({
             <el-col :span="8">
                 <el-card>
                     <p>欢迎, {{ user.username }}!</p>
-                    <el-button type="primary" @click="showFavorites = true">查看收藏夹</el-button>
+                    <el-button type="primary" @click="$router.push('/favorite')">查看收藏夹</el-button>
                     <el-button type="success" @click="$router.push('/upload')">上传鱼类</el-button>
                     <el-button type="warning" @click="$router.push('/check')">审核状态</el-button>
                 </el-card>
@@ -142,7 +156,7 @@ export default defineComponent({
                 </el-card>
             </el-col>
 
-            <el-col :span="8">
+            <el-col :span="24">
                 <el-card>
                     <h2>搜索结果</h2>
                     <div v-if="searchResults.length === 0">暂无搜索结果</div>
@@ -155,12 +169,15 @@ export default defineComponent({
                                 <img :src="row.image_url" alt="鱼类图片" style="width: 100px; height: 100px;" />
                             </template>
                         </el-table-column>
+                        <el-table-column label="操作">
+                            <template #default="{ row }">
+                                <el-button type="primary" @click="addToFavorites(row)">加入收藏夹</el-button>
+                            </template>
+                        </el-table-column>
                     </el-table>
                 </el-card>
             </el-col>
         </el-row>
-
-        <FavoriteModal v-if="showFavorites" @close="showFavorites = false" />
     </div>
 </template>
 

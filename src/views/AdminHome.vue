@@ -56,9 +56,10 @@
                     <h2>用户搜索记录表</h2>
                     <el-table :data="searchRecords" style="width: 100%">
                         <el-table-column prop="id" label="ID" width="50" />
-                        <el-table-column prop="username" label="用户名" />
-                        <el-table-column prop="query" label="搜索内容" />
-                        <el-table-column prop="timestamp" label="时间" />
+                        <el-table-column prop="user_id" label="用户ID" />
+                        <el-table-column prop="search_method" label="搜索类型" />
+                        <el-table-column prop="search_content" label="搜索内容" />
+                        <el-table-column prop="search_at" label="时间" />
                     </el-table>
                 </el-card>
             </el-col>
@@ -114,8 +115,8 @@ export default defineComponent({
 
         const fetchSearchRecords = async () => {
             try {
-                const response = await api.get('/api/search-records');
-                searchRecords.value = response.data.records;
+                const response = await api.get('/record/search_history');
+                searchRecords.value = response.data.search_history;
             } catch (error) {
                 ElMessage.error('获取用户搜索记录失败');
             }
