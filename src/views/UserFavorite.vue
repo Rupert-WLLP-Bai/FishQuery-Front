@@ -8,22 +8,32 @@
 
         <el-row>
             <el-col :span="24">
-                <el-table :data="favorites" style="width: 100%">
+                <el-table :data="favorites.slice((currentPageFish - 1) * pageSize, currentPageFish * pageSize)" style="width: 100%">
                     <el-table-column prop="name_cn" label="中文名" />
                     <el-table-column prop="name_latin" label="拉丁名" />
                     <el-table-column label="缩略图">
                         <template #default="{ row }">
-                            <el-image style="width: 60px; height: 60px" :src="row.image_url" fit="cover" />
+                            <el-image style="width: 100px; height: 100px" :src="row.image_url" fit="contain" />
                         </template>
                     </el-table-column>
                     <el-table-column prop="tags" label="标签" />
                     <el-table-column prop="created_at" label="收藏时间" />
-                    <el-table-column label="操作">
-                        <template #default="{ row }">
-                            <el-button type="danger" @click="removeFavorite(row.id)">删除</el-button>
-                        </template>
-                    </el-table-column>
+                  <el-table-column label="操作" width="200">
+                    <template #default="{ row }">
+                      <div class="operation-buttons">
+                        <el-button type="danger" @click="removeFavorite(row.id)">删除</el-button>
+                        <el-button type="primary" @click="downloadImage(row.image_url)">下载</el-button>
+                      </div>
+                    </template>
+                  </el-table-column>
                 </el-table>
+              <el-pagination
+                background
+                layout="prev, pager, next"
+                :total="favorites.length"
+                :page-size="pageSize"
+                @current-change="currentPageFish = $event"
+              />
             </el-col>
         </el-row>
     </div>
@@ -43,6 +53,9 @@ export default defineComponent({
 
         const userStore = useUserStore();
 
+        const pageSize = ref(10);
+        const currentPageFish = ref(1);
+
         const removeFavorite = async (favoriteId: number) => {
             try {
                 await api.delete('/favorites/favorite',
@@ -53,6 +66,15 @@ export default defineComponent({
                 ElMessage.error('删除失败');
             }
         };
+
+      const downloadImage = (imageUrl: string) => {
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.setAttribute('download', 'image.jpg');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
 
         const fetchFavorites = async () => {
             try {
@@ -73,6 +95,9 @@ export default defineComponent({
             favorites,
             removeFavorite,
             fetchFavorites,
+            downloadImage,
+            pageSize,
+            currentPageFish,
             goBack
         };
     },
@@ -85,5 +110,10 @@ export default defineComponent({
 <style scoped>
 .favorites-page {
     padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
+
+
+
 </style>

@@ -161,7 +161,7 @@ export default defineComponent({
                         </div>
 
                         <div v-if="searchMode === 'tag'" class="search-by-tag">
-                            <el-input v-model="tags" placeholder="标签 (逗号分隔)" clearable />
+                            <el-input v-model="tags" placeholder="标签 " clearable />
                             <el-input-number v-model="matchingCount" :min="1" placeholder="匹配图片数量" />
                             <el-button type="primary" @click="searchByTag">通过标签搜索</el-button>
                         </div>
@@ -180,7 +180,7 @@ export default defineComponent({
                             <el-table-column prop="tags" label="标签"></el-table-column>
                             <el-table-column label="图片">
                                 <template #default="{ row }">
-                                    <el-image style="width: 100px; height: 100px" :src="row.image_url" fit="cover" />
+                                    <el-image style="width: 100px; height: 100px" :src="row.image_url" fit="contain" />
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作">
@@ -197,8 +197,17 @@ export default defineComponent({
 </template>
 
 <style scoped>
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .user-home {
-    padding: 20px;
+  width: 100%;
+
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .search-by-text,
@@ -221,10 +230,12 @@ export default defineComponent({
 .header {
     margin-bottom: 20px;
     width: 100%;
+    text-align: center;
 }
 
 .main {
     margin-top: 20px;
     width: 100%;
+    justify-content: center;
 }
 </style>
