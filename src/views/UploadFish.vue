@@ -68,7 +68,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <el-row>
+    <el-row class="limited-width-row">
         <el-col :span="24">
             <el-page-header content="上传鱼类" @back="goBack" />
         </el-col>
@@ -86,6 +86,12 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+.limited-width-row {
+  max-width: 400px; /* You can adjust the value as needed */
+  margin: 0 auto; /* This will center the row horizontally */
+}
+
 .el-upload {
     margin-top: 20px;
 }

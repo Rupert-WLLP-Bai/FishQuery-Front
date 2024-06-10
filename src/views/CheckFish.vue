@@ -24,6 +24,9 @@ export default defineComponent({
         const loading = ref(false);
         const userStore = useUserStore();
 
+        const pageSize = ref(10);
+        const currentPageFish = ref(1);
+
         const fetchReviewStatuses = async () => {
             loading.value = true;
             try {
@@ -48,19 +51,21 @@ export default defineComponent({
         return {
             goBack,
             reviewStatuses,
-            loading
+            loading,
+            pageSize,
+            currentPageFish,
         };
     }
 });
 </script>
 
 <template>
-    <el-row>
+    <el-row class="limited-width-row">
         <el-col :span="24">
             <el-page-header content="审核状态" @back="goBack" />
         </el-col>
         <el-col :span="24">
-            <el-table :data="reviewStatuses" v-loading="loading" style="width: 100%">
+            <el-table :data="reviewStatuses.slice((currentPageFish - 1) * pageSize, currentPageFish * pageSize)" v-loading="loading" style="width: 100%">
                 <el-table-column prop="id" label="ID" width="50" />
                 <el-table-column prop="image_url" label="图片">
                     <template #default="{ row }">
@@ -81,11 +86,24 @@ export default defineComponent({
                 <el-table-column prop="feedback" label="反馈" />
                 <el-table-column prop="created_at" label="上传时间" />
             </el-table>
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="reviewStatuses.length"
+            :page-size="pageSize"
+            @current-change="currentPageFish = $event"
+          />
         </el-col>
     </el-row>
 </template>
 
 <style scoped>
+
+.limited-width-row {
+  max-width: 1000px; /* You can adjust the value as needed */
+  margin: 0 auto; /* This will center the row horizontally */
+}
+
 .el-table .el-table-column--image {
     width: 60px;
     height: 60px;
