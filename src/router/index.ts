@@ -7,13 +7,19 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        hideNavbar: true
+      }
     },
     // 登录视图
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/UserLogin.vue')
+      component: () => import('../views/UserLogin.vue'),
+      meta: {
+        hideNavbar: true
+      }
     },
     {
       path: '/home',
@@ -33,7 +39,10 @@ const router = createRouter({
     {
       path: '/admin',
       name: 'admin',
-      component: () => import('../views/AdminHome.vue')
+      component: () => import('../views/AdminHome.vue'),
+      meta: {
+        hideNavbar: true
+      }
     },
     {
       path: '/favorite',

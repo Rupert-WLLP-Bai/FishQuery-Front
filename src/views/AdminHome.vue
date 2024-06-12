@@ -7,7 +7,7 @@
   <div class="admin-home">
     <el-row>
       <el-col :span="24">
-        <h1 class="text-center">管理员首页</h1>
+        <h1 style="text-align: center; font-size: 36px; margin: 20px 0;">管理员首页</h1>
       </el-col>
     </el-row>
 

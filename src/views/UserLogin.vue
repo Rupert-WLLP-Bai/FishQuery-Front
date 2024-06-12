@@ -1,22 +1,24 @@
 <template>
-  <div class="login-card-container">
-    <div class="login-card">
-      <h2>{{ isLogin ? 'Login' : 'Register' }}</h2>
-      <el-form :model="user" label-position="top" @submit.prevent="isLogin ? login() : register()">
-        <el-form-item label="Username">
-          <el-input v-model="user.username" required></el-input>
-        </el-form-item>
-        <el-form-item label="Password">
-          <el-input type="password" v-model="user.password" required></el-input>
-        </el-form-item>
-        <el-form-item v-if="!isLogin" label="Email">
-          <el-input type="email" v-model="user.email" required></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" native-type="submit">{{ isLogin ? 'Login' : 'Register' }}</el-button>
-        </el-form-item>
-      </el-form>
-      <el-button @click="isLogin = !isLogin">{{ isLogin ? 'Switch to Register' : 'Switch to Login' }}</el-button>
+  <div class="login-container">
+    <div class="login-card-container">
+      <div class="login-card">
+        <h2>{{ isLogin ? 'Login' : 'Register' }}</h2>
+        <el-form :model="user" label-position="top" @submit.prevent="isLogin ? login() : register()">
+          <el-form-item label="Username">
+            <el-input v-model="user.username" required></el-input>
+          </el-form-item>
+          <el-form-item label="Password">
+            <el-input type="password" v-model="user.password" required></el-input>
+          </el-form-item>
+          <el-form-item v-if="!isLogin" label="Email">
+            <el-input type="email" v-model="user.email" required></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" native-type="submit">{{ isLogin ? 'Login' : 'Register' }}</el-button>
+          </el-form-item>
+        </el-form>
+        <el-button @click="isLogin = !isLogin">{{ isLogin ? 'Switch to Register' : 'Switch to Login' }}</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -89,13 +91,21 @@ export default {
 
 <style scoped>
 
-.login-card-container {
-  width: 400px;
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 0 auto;
-  padding: 2rem;
+  height: 100vh;
+}
+
+.login-card-container {
+
+  width: 400px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
 }
 
 .login-card {
@@ -105,24 +115,24 @@ export default {
 }
 
 .container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 5px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
 }
 
 h2 {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .form-item {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .switch-button {
-    text-align: center;
-    margin-top: 20px;
+  text-align: center;
+  margin-top: 20px;
 }
 </style>
