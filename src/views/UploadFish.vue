@@ -3,9 +3,13 @@ import { defineComponent, ref } from 'vue';
 import api from '@/config/axios';
 import { useUserStore } from '@/stores/user';
 import { ElMessage } from 'element-plus';
+import NavBar from '@/components/NavBar.vue'
 
 export default defineComponent({
     name: 'UploadFish',
+  components: {
+    NavBar,
+  },
     setup() {
         const name_latin = ref('');
         const tags = ref('');

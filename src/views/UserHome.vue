@@ -3,9 +3,14 @@ import { defineComponent, ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 import api from '@/config/axios';
 import { ElMessage } from 'element-plus';
+import NavBar from '@/components/NavBar.vue'
 
 export default defineComponent({
     name: 'UserHome',
+
+    components: {
+      NavBar,
+    },
 
     setup() {
         const userStore = useUserStore();
@@ -101,8 +106,8 @@ export default defineComponent({
             searchByTag,
             handleImageUpload,
             showFavorites,
-            addToFavorites
-        };
+            addToFavorites,
+        }
     },
     mounted() {
         console.log('UserHome mounted');
@@ -112,87 +117,87 @@ export default defineComponent({
 
 <template>
     <div class="user-home">
-        <div class="header">
+      <el-container>
+        <el-header>
+          <div class="header">
             <el-row>
-                <el-col :span="24">
-                    <h1>用户首页</h1>
-                </el-col>
+              <el-col :span="24">
+                <h1>用户首页</h1>
+              </el-col>
             </el-row>
 
             <!-- 登出 -->
             <el-row>
+              <el-col :span="24">
+                <el-button type="danger"
+                           @click="userStore.setUser(null); $router.push('/login'); ElMessage.success('已登出')">登出</el-button>
+              </el-col>
+            </el-row>
+          </div>
+        </el-header>
+
+        <el-container>
+          <el-main>
+            <div class="main">
+              <el-row :gutter="20" style="margin-top: 20px;">
+
+                  <el-card>
+                    <h2>搜索鱼类</h2>
+                    <el-button-group style="margin-bottom: 20px;">
+                      <el-button @click="searchMode = 'text'">通过文本搜索</el-button>
+                      <el-button @click="searchMode = 'image'">通过图片搜索</el-button>
+                      <el-button @click="searchMode = 'tag'">通过标签搜索</el-button>
+                    </el-button-group>
+
+                    <div v-if="searchMode === 'text'" class="search-by-text">
+                      <el-input v-model="searchQuery" placeholder="搜索鱼名或标签" clearable />
+                      <el-input-number v-model="matchingCount" :min="1" placeholder="匹配图片数量" />
+                      <el-button type="primary" @click="searchByText">搜索</el-button>
+                    </div>
+
+                    <div v-if="searchMode === 'image'" class="search-by-upload">
+                      <input type="file" @change="handleImageUpload" />
+                      <el-input-number v-model="matchingCount" :min="1" placeholder="匹配图片数量" />
+                      <el-button type="primary" @click="searchByImage">通过图片搜索</el-button>
+                    </div>
+
+                    <div v-if="searchMode === 'tag'" class="search-by-tag">
+                      <el-input v-model="tags" placeholder="标签 " clearable />
+                      <el-input-number v-model="matchingCount" :min="1" placeholder="匹配图片数量" />
+                      <el-button type="primary" @click="searchByTag">通过标签搜索</el-button>
+                    </div>
+                  </el-card>
+              </el-row>
+
+              <el-row :gutter="20" style="margin-top: 20px;">
                 <el-col :span="24">
-                    <el-button type="danger"
-                        @click="userStore.setUser(null); $router.push('/login'); ElMessage.success('已登出')">登出</el-button>
+                  <el-card>
+                    <h2>搜索结果</h2>
+                    <div v-if="searchResults.length === 0" class="empty-results">暂无搜索结果</div>
+                    <el-table :data="searchResults" v-else>
+                      <el-table-column prop="name_cn" label="中文名"></el-table-column>
+                      <el-table-column prop="name_latin" label="拉丁名"></el-table-column>
+                      <el-table-column prop="tags" label="标签"></el-table-column>
+                      <el-table-column label="图片">
+                        <template #default="{ row }">
+                          <el-image style="width: 100px; height: 100px" :src="row.image_url" fit="contain" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作">
+                        <template #default="{ row }">
+                          <el-button type="primary" @click="addToFavorites(row)">加入收藏夹</el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </el-card>
                 </el-col>
-            </el-row>
-        </div>
+              </el-row>
+            </div>
+          </el-main>
+        </el-container>
+      </el-container>
 
-        <div class="main">
-            <el-row :gutter="20" style="margin-top: 20px;">
-                <el-col :span="8">
-                    <el-card>
-                        <p>欢迎, {{ user.username }}!</p>
-                        <el-button type="primary" @click="$router.push('/favorite')">查看收藏夹</el-button>
-                        <el-button type="success" @click="$router.push('/upload')">上传鱼类</el-button>
-                        <el-button type="warning" @click="$router.push('/check')">审核状态</el-button>
-                    </el-card>
-                </el-col>
 
-                <el-col :span="16">
-                    <el-card>
-                        <h2>搜索鱼类</h2>
-                        <el-button-group style="margin-bottom: 20px;">
-                            <el-button @click="searchMode = 'text'">通过文本搜索</el-button>
-                            <el-button @click="searchMode = 'image'">通过图片搜索</el-button>
-                            <el-button @click="searchMode = 'tag'">通过标签搜索</el-button>
-                        </el-button-group>
-
-                        <div v-if="searchMode === 'text'" class="search-by-text">
-                            <el-input v-model="searchQuery" placeholder="搜索鱼名或标签" clearable />
-                            <el-input-number v-model="matchingCount" :min="1" placeholder="匹配图片数量" />
-                            <el-button type="primary" @click="searchByText">搜索</el-button>
-                        </div>
-
-                        <div v-if="searchMode === 'image'" class="search-by-upload">
-                            <input type="file" @change="handleImageUpload" />
-                            <el-input-number v-model="matchingCount" :min="1" placeholder="匹配图片数量" />
-                            <el-button type="primary" @click="searchByImage">通过图片搜索</el-button>
-                        </div>
-
-                        <div v-if="searchMode === 'tag'" class="search-by-tag">
-                            <el-input v-model="tags" placeholder="标签 " clearable />
-                            <el-input-number v-model="matchingCount" :min="1" placeholder="匹配图片数量" />
-                            <el-button type="primary" @click="searchByTag">通过标签搜索</el-button>
-                        </div>
-                    </el-card>
-                </el-col>
-            </el-row>
-
-            <el-row :gutter="20" style="margin-top: 20px;">
-                <el-col :span="24">
-                    <el-card>
-                        <h2>搜索结果</h2>
-                        <div v-if="searchResults.length === 0" class="empty-results">暂无搜索结果</div>
-                        <el-table :data="searchResults" v-else>
-                            <el-table-column prop="name_cn" label="中文名"></el-table-column>
-                            <el-table-column prop="name_latin" label="拉丁名"></el-table-column>
-                            <el-table-column prop="tags" label="标签"></el-table-column>
-                            <el-table-column label="图片">
-                                <template #default="{ row }">
-                                    <el-image style="width: 100px; height: 100px" :src="row.image_url" fit="contain" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="操作">
-                                <template #default="{ row }">
-                                    <el-button type="primary" @click="addToFavorites(row)">加入收藏夹</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-card>
-                </el-col>
-            </el-row>
-        </div>
     </div>
 </template>
 
