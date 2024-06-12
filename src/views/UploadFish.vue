@@ -1,7 +1,9 @@
 <script lang="ts">
+
 import { defineComponent, ref } from 'vue';
 import api from '@/config/axios';
 import { useUserStore } from '@/stores/user';
+import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import NavBar from '@/components/NavBar.vue'
 
@@ -16,7 +18,7 @@ export default defineComponent({
         const image_file = ref<File | null>(null);
         const uploadStatus = ref('');
         const userStore = useUserStore();
-
+        const router = useRouter();
         const uploadFish = async () => {
             if (!image_file.value) {
                 ElMessage.error('请上传图片');
@@ -53,9 +55,9 @@ export default defineComponent({
             }
         };
 
-        const goBack = () => {
-            window.history.back();
-        };
+      const goBack = () => {
+        router.push('/home');
+      };
 
         return {
             goBack,
@@ -72,31 +74,37 @@ export default defineComponent({
 </script>
 
 <template>
-    <el-row class="limited-width-row">
-        <el-col :span="24">
-            <el-page-header content="上传鱼类" @back="goBack" />
-        </el-col>
-
-        <el-col :span="24">
-            <el-card>
-                <el-input v-model="name_latin" placeholder="鱼的拉丁名称" clearable />
-                <el-input v-model="tags" placeholder="标签 (逗号分隔)" clearable />
-                <input type="file" @change="handleImageUpload" />
-                <el-button type="primary" @click="uploadFish">上传</el-button>
-                <!-- <p>{{ uploadStatus }}</p> -->
-            </el-card>
-        </el-col>
-    </el-row>
+  <div class="upload-fish-container">
+    <div class="upload-fish-card-container">
+      <el-card class="upload-fish-card">
+        <el-input v-model="name_latin" placeholder="鱼的拉丁名称或中文名称" clearable />
+        <el-input v-model="tags" placeholder="标签 (逗号分隔)" clearable />
+        <input type="file" @change="handleImageUpload" />
+        <el-button type="primary" @click="uploadFish">上传</el-button>
+        <!-- <p>{{ uploadStatus }}</p> -->
+      </el-card>
+    </div>
+  </div>
 </template>
+
 
 <style scoped>
 
-.limited-width-row {
-  max-width: 400px; /* You can adjust the value as needed */
-  margin: 0 auto; /* This will center the row horizontally */
+.upload-fish-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.9)), url('@/assets/cover.jpg');
 }
 
-.el-upload {
-    margin-top: 20px;
+.upload-fish-card-container {
+  width: 400px;
+}
+
+.upload-fish-card {
+  padding: 2rem;
+  border-radius: 8px;
 }
 </style>

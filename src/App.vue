@@ -5,12 +5,9 @@ import NavBar from '@/components/NavBar.vue'
 
 <template>
   <el-container>
-    <el-header>
-      用户首页
-    </el-header>
 
-    <el-container>
-      <el-aside>
+    <el-container class="nav-container">
+      <el-aside v-if="!$route.meta.hideNavbar">
         <NavBar></NavBar>
       </el-aside>
 
@@ -21,3 +18,11 @@ import NavBar from '@/components/NavBar.vue'
   </el-container>
 
 </template>
+
+<style scoped>
+
+.nav-container {
+  margin-top: 50px;
+}
+
+</style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+import { useRouter } from 'vue-router';
 import { defineComponent, ref, onMounted } from 'vue';
 import { useUserStore } from '@/stores/user';
 import api from '@/config/axios';
@@ -27,6 +28,8 @@ export default defineComponent({
         const pageSize = ref(10);
         const currentPageFish = ref(1);
 
+        const router = useRouter();
+
         const fetchReviewStatuses = async () => {
             loading.value = true;
             try {
@@ -40,9 +43,9 @@ export default defineComponent({
             }
         };
 
-        const goBack = () => {
-            window.history.back();
-        };
+      const goBack = () => {
+        router.push('/home');
+      };
 
         onMounted(() => {
             fetchReviewStatuses();

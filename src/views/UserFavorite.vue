@@ -46,6 +46,7 @@ import { ElMessage } from 'element-plus';
 import { ref } from 'vue';
 import api from '@/config/axios';
 import NavBar from '@/components/NavBar.vue'
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'FavoritesPage',
@@ -54,9 +55,8 @@ export default defineComponent({
   },
     setup() {
         const favorites = ref([]);
-
         const userStore = useUserStore();
-
+        const router = useRouter();
         const pageSize = ref(10);
         const currentPageFish = ref(1);
 
@@ -91,9 +91,9 @@ export default defineComponent({
             }
         };
 
-        const goBack = () => {
-            window.history.back();
-        };
+      const goBack = () => {
+        router.push('/home');
+      };
 
         return {
             favorites,
