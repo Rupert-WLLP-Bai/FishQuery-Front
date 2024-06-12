@@ -45,9 +45,13 @@ import { useUserStore } from '@/stores/user';
 import { ElMessage } from 'element-plus';
 import { ref } from 'vue';
 import api from '@/config/axios';
+import NavBar from '@/components/NavBar.vue'
 
 export default defineComponent({
     name: 'FavoritesPage',
+  components: {
+    NavBar,
+  },
     setup() {
         const favorites = ref([]);
 
