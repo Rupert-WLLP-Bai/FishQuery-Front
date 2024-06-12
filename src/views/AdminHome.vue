@@ -38,13 +38,15 @@
           <h2>用户上传的图审核</h2>
           <el-table :data="pendingImages.slice((currentPageImage - 1) * pageSize, currentPageImage * pageSize)" style="width: 100%">
             <el-table-column prop="user_id" label="user_id" width="70" />
+            <el-table-column prop="username" label="用户名" width="70" />
+            <el-table-column prop="name_cn" label="鱼名" width="70" />
             <el-table-column prop="image" label="图片">
               <template v-slot="scope">
                 <el-image :src="scope.row.image_url" style="width: 100px; height: 100px" fit="contain" />
               </template>
             </el-table-column>
             <el-table-column prop="tags" label="标签" />
-            <el-table-column prop="is_approved" label="状态" />
+            <el-table-column prop="created_at" label="创建时间" />
             <el-table-column label="操作" width="200">
               <template v-slot="scope">
                 <el-button @click="approveImage(scope.row.id)" type="success">通过</el-button>
@@ -70,6 +72,7 @@
           <el-table :data="searchRecords.slice((currentPageSearch - 1) * pageSize, currentPageSearch * pageSize)" style="width: 100%">
             <el-table-column prop="id" label="ID" width="50" />
             <el-table-column prop="user_id" label="用户ID" />
+            <el-table-column prop="username" label="用户名" />
             <el-table-column prop="search_method" label="搜索类型" />
             <el-table-column prop="search_content" label="搜索内容" />
             <el-table-column prop="search_at" label="时间" />
